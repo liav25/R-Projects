@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://127.0.0.1:3701/ -->
+<html class="gr__127_0_0_1"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  
+  <script type="application/shiny-singletons"></script>
+  <script type="application/html-dependencies">json2[2014.02.04];jquery[1.12.4];shiny[1.2.0];bootstrap[3.3.7]</script>
+<script src="./Names History Graph Maker_files/json2-min.js.הורדה"></script>
+<script src="./Names History Graph Maker_files/jquery.min.js.הורדה"></script>
+<link href="./Names History Graph Maker_files/shiny.css" rel="stylesheet">
+<script src="./Names History Graph Maker_files/shiny.min.js.הורדה"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./Names History Graph Maker_files/bootstrap.min.css" rel="stylesheet">
+<script src="./Names History Graph Maker_files/bootstrap.min.js.הורדה"></script>
+<script src="./Names History Graph Maker_files/html5shiv.min.js.הורדה"></script>
+<script src="./Names History Graph Maker_files/respond.min.js.הורדה"></script>  <title>Names History Graph Maker</title>
+
+</head>
+
+<body data-gr-c-s-loaded="true">
+  <div class="container-fluid">
+    <h2>Names History Graph Maker</h2>
+    <div class="row">
+      <div class="col-sm-4">
+        <form class="well">
+          <div class="form-group shiny-input-container">
+            <label for="inputName">Name:</label>
+            <input id="inputName" type="text" class="form-control shiny-bound-input" value="" placeholder="Name">
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-8">
+        <div id="distPlot" class="shiny-plot-output shiny-bound-output" style="width: 100% ; height: 400px"><img src="data:image/png;base64,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" width="994" height="400"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+</body></html>
