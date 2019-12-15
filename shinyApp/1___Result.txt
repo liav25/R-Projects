@@ -1,1 +1,4 @@
 https://liav.shinyapps.io/nameProject/
+
+#when search use capital letters in beggining, fo
+#for example: "Liav", and not "liav" or "LIAV"
