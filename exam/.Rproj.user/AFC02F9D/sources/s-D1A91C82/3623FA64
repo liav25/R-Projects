@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1568190908190.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "3623FA64",
+    "lastKnownWriteTime" : 1568191014,
+    "last_content_update" : 1568192453604,
+    "path" : "C:/Users/Liav/PycharmProjects/twitter/regressions.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "125,15",
+        "scrollLine" : "93"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

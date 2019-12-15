@@ -1,0 +1,1 @@
+"0","accidents.new[c(45:54),which(colnames(accidents.new) %in% c(""accident_hour"", ""hour"", ""minutes""))]"

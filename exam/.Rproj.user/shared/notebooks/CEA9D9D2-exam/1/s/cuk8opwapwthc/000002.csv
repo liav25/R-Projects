@@ -1,0 +1,8 @@
+"0","#grouping by types"
+"0","types = accidents.new %>% group_by(accident_year, accident_type_hebrew) %>% summarise(total = sum(X)) %>% filter(total>50)"
+"0","#create the yearly ratio from the counting of accidents"
+"0","for (i in 2013:2018){"
+"0","types[which(types$accident_year==i),3] = types[which(types$accident_year==i),3]/sum(types$total[types$accident_year==i])"
+"0","}"
+"0","#show the plot"
+"0","ggplot(data = types, aes(x=accident_year, y=total, colour=accident_type_hebrew)) + geom_line(size=2) + ggtitle(""Accident types precent along the years"") + xlab(""Years"") + ylab(""Yearly type rate"")"

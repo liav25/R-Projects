@@ -1,0 +1,4 @@
+"0","#show the rows that aren't passing the correctness filter"
+"0","check = accidents.new[which(!sapply(accidents.new$accident_hour, time_verify)),]"
+"0","#remove hashtag to enable the following row"
+"0","#View(accidents.new)"

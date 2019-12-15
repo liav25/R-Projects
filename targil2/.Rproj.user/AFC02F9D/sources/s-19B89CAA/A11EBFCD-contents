@@ -1,0 +1,72 @@
+---
+title: "ex2"
+author: '20474862'
+date: "31 במאי 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gdata)
+```
+
+###Measles Vaccines
+In this excersize, we will want to use R and our statistics knowladge to try understanding the benefits and effects of vaccines.
+
+####Part I
+First, we would like to load our data. The data used for these plots were collected, organized and distributed by the Tycho Project. They include weekly reported counts data for seven diseases from 1928 to 2011, from all fifty states.
+
+First, we'll define our work directory with the command workdir, and afterwards we can load the data by using read.csv.
+
+```{r}
+workdir = "C:/Users/Liav/Desktop/Uni/R/targil2"
+setwd(workdir)
+#loading the data
+data = read.csv("diseases.csv")
+```
+To get a clue about how the data looks like, we can use the head command to pring the first rows of it.
+```{r}
+head(data)
+```
+
+1. In the following part we will try to focus on the Mealses disease. Measles affects about 20 million people a year,primarily in the developing areas of Africa and Asia. It is one of the leading vaccine-preventable disease causes of death. In the United States, measles affected approximately 3,000 people per million in the 1960s before the vaccine was available.
+
+To do so, we will filter our data frame rows which their "disease" value is "Measles".
+```{r}
+#save subset of Measles out of our data.
+dat = data[which(data$disease=="Measles"),]
+```
+```
+As a first step, we will clean a bit our data. We will remove Alaska and Hawaii from the data (since they only became states in the late 50s), and add a per 100,000 people rate column to eliminate the impact of population size in the different states. In addition, since some of our observations collected over different number of weeks, we can add a column of appearance of measles per week and per 100K people per week.
+```{r}
+#removing Hawaii and Alaska
+dat = dat[-c(which(dat$state %in% c("Hawaii","Alaska") )),]
+
+#create per100K people column
+dat$per_100k = dat$count/100000
+#create per week column
+dat$per_week = dat$count/dat$weeks_reporting
+#create per 100K per weekm column
+dat$per_week_per_100k = dat$per_week/100000
+
+
+head(dat)
+
+cali = dat[which(dat$stat == "California"),]
+cali
+{yearly_cali_rate_plot = plot(x = cali$year, y = cali$per_week,xlab="Year", ylab = "Mealses cases per week")
+abline(v=1962, col="blue")
+}
+
+```
+
+
+```{r cars}
+summary(cars)
+```
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

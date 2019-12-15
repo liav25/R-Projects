@@ -1,0 +1,392 @@
+---
+title: "ex1"
+author: "Liav Alter"
+output:
+  word_document: default
+  pdf_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#we will use readxl library to read .xls files
+library("readxl")
+library(dplyr)
+library(Unicode)
+library(data.table)
+library(reshape)
+library(tidyr)
+library(utf8)
+library(gdata)
+library(ggplot2)
+library(RColorBrewer)
+library(rworldmap)
+library(ggmap)
+
+
+```
+###Pisa Test
+####1.1 
+First we will want to load our Pisa test excel files. To do that, we'll define our work directory to be the folder that contains the 'pisa.xlsx' file, with the command wordkir.
+As the 'pisa.xlsx' contains 3 sheets, we will load each of them to a different reference.
+
+```{r}
+workdir = "C:/Users/Liav/Desktop/Uni/R/targil1"
+setwd(workdir)
+
+pisa_math = read_excel("pisa.xlsx", sheet=1)
+
+pisa_reading = read_excel("pisa.xlsx", sheet=2)
+pisa_science = read_excel("pisa.xlsx", sheet=3)
+
+```
+
+To get a clue about how the data looks like, we can use the head command to pring the first rows of it. Let's make an example with pisa_math.
+
+```{r}
+head(pisa_math)
+```
+
+Since all the worksheets share the same columns names, to differ them, we can change some of the columns name.
+```{r}
+colnames(pisa_math)[2] = "math_score"
+colnames(pisa_reading)[2] = "reading_score"
+colnames(pisa_science)[2] = "science_score"  
+
+```
+
+####1.2 
+We would like to check who were the leading countries in every field in 2015. To do so, we will sort by descending order the 2015 year subset. This command might seem very complicated, let's try to explain it simply:
+
+1. head command (x, n= 3L) is the same head command we used before, but now we used "n=3L" to get the first 3 lines.
+
+2. pisa_math[y, year=2015] command gives us a susbet of the pisa_math rows that their value in column 'year' equals to 2015.
+   notice that pisa_math is the name of the dataframe, we can change it later to another name for the other dataframes.
+   
+3. order(pisa_math$math_score, decreasing = TRUE) returns the data decreasing order if the data frame be the pisa_math column.
+
+To connect those three simple functions we can write the 3rd function instead of y, and the joined 2nd function (with 3 insted of y) instead of x, and now we got the 3 first countries orederd by scores, only when year was 2015.
+```{r}
+head(subset(pisa_math[order(pisa_math$math_score, decreasing = TRUE), ], year == 2015), n=3L)
+head(subset(pisa_science[order(pisa_science$science_score, decreasing = TRUE), ], year == 2015), n=3L)
+head(subset(pisa_reading[order(pisa_reading$reading_score, decreasing = TRUE), ], year == 2015), n=3L)
+
+```
+We can see that Singapore students has the best Pisa test grades in 2015, in all fields.
+
+####1.3
+To continue working on this data set, we would like to merge the all three dataframes to one.
+For this, we can use the merge command. At first we merge the science and math grades columns. 
+The command "all=TRUE" used to keep the NA value rows. 
+The "sort=TRUE" command used to keep the new dataframe sorted by the country name. 
+
+After we merged science and math grade we can merge them again to the reading grade dataframe by the same method. 
+
+```{r}
+data = merge( merge( pisa_math, pisa_science, by = c("Country","year") ,all = TRUE, sort = TRUE), pisa_reading, by = c("Country","year"), all = TRUE, sort=TRUE )
+
+```
+Here is ther head of our new merged dataframe:
+```{r ,echo=FALSE}
+head(data, n=7L)
+```
+ 
+Before we continue to answer the next questions, we would like to make sure that the columns type is still numeric, so we can apply arithmetic functions on them.
+For that, we'll use the following:
+```{r}
+sapply(data, class)
+```
+ We can see that the type of the values in the score columns are character. There for, we'll use sapply to apply the function as numeric on the 3rd to 5th columns.
+```{r, warning=FALSE}
+data[, 3:5] <- sapply(data[, 3:5], as.numeric)
+sapply(data, class)
+```
+And now we can see the type changed to numeric.
+
+
+####1.4 
+We'll check the avarage pisa scores (average of all three fields scores) for each country on every year. To make it a fair competition, we will calculate only the rows that includes all three grades.
+```{r}
+data$average_score <- rowMeans(data[,3:5], na.rm=TRUE)
+```
+Here is ther head of our new dataframe, with the average column:
+```{r ,echo=FALSE}
+head(data, n=3L)
+```
+####1.5
+As beofre, let's use the subset and order functions to present the top average scores countries in 2006 and 2015.
+This time, we will use "[,c(1,6)]" slicing to show only the 1st, 2nd and 6th column.
+
+```{r}
+head(subset(data[order(data$average_score, decreasing = TRUE), ], year == 2015)[,c(1,2,6)], n=3L)
+head(subset(data[order(data$average_score, decreasing = TRUE), ], year == 2006)[,c(1,2,6)], n=3L)
+```
+***
+
+###Salaries
+Now, we'll start working on the salaries file.
+
+2.1
+From a brief look on the data, we can see that the 2nd sheet on the sal.xlsx file is just an addition of a nonimnal salary column.
+Therefor, to save time and code, it will be a good idea to join the two dataframes by adding the "current" column from the 2nd dataframe to the first one.
+We' will use the same read_excel command from before to do so, and than we'll just add manually the missing column.
+
+```{r}
+salaries = read_excel("sal.xlsx", sheet=1)
+sal_nominal = read_excel("sal.xlsx", sheet=2)   
+salaries$current = sal_nominal$current
+```
+Here are some rows of our new dataframe:
+```{r, echo=FALSE}
+salaries[16:18,]
+```
+
+
+
+
+####Data complection and cleaning
+
+Before we will start analyzing our data, we will want to have a look of it and see if there are missing values or any outliners that we need to take care of. After a quick look on the salaries dataframe, we can see that some of the salaries are missing. Take a look for example, on the 2006 and 2008 salary in Sweden. In order to fill the missing data, we can user linear regression and try to predict what were the salaries in the missing fields.
+
+
+To fill out dataframe, I wrote myself the following function:
+```{r}
+salary_predict <- function(row, i) {
+df <- data.frame(x=1:13,y=100*(1:13))
+df$y = as.vector(unlist(salaries[i,3:15]))
+df$x= as.numeric(colnames(salaries[3:15]))
+model <- lm(y~x+1,data=df)
+df$y_hat <- predict.lm(model, newdata = df)
+df= df %>% mutate(y = ifelse(is.na(y), y_hat, y))
+return(df$y)
+}
+```
+
+The function parameters are a row, and a row index. Since i wanted to predict more efficiently the missing values from years 2005-2017, and since later on we will not need it, i decided to ignore the "2000" column for now. 
+The function creates a new dataframe with index values for cells. Afterwards, save inside them the Y vector which we want to predict (our explained variable), which in our case is the row's 3rd to 15th values, which we had to unlist them and save as vector because of the predict function input demands. We did the same for our explaining variable, which is the series of years 2005-2017. model function creates a model, and y_hat is the vector of model predictions. Since we already have some data, we will take only the missing index and mutate them into our Y vector.
+
+After we built the function, we will have to apply them on each row. For this, we can use a for loop that go through each row and replacing the values 3:15 in the function output.
+
+```{r}
+for(i in 1:nrow(salaries)) {
+    row <- salaries[i,]
+    salaries[i,3:15] =  salary_predict(row,i)
+}
+```
+And here is an example our filled data:
+
+```{r, echo=FALSE}
+salaries = salaries[,-c(2)]
+salaries[16:18,]
+
+```
+
+
+#####Note: Since our next question will be about years 2005-2017, i decided to drop 2000 salaries for now.
+
+####2.2
+Now, we can find the nominal wages in each country in any year, by using the "current" column. Since the wage from 2006 to 2016. The forumla is going to be (Year.i*year.0)/nominal, while year 0 is 2017.
+To do this, we will use for a for loop again, this time on columns 2:13 (since the 13th column is 2017 wage)
+
+```{r}
+for(i in 2:ncol(salaries)) {
+  salaries[i] = ((salaries[i]/salaries$`2017`)*salaries$current)
+}
+salaries[16:18,]
+
+```
+Since Estonoia current wage in nominal terms is missing, , we got NA over the values. Since this row can help us at the moment, we can drop the Estonia salary row. We can also drop the nominal current salary, since it equals to the 2017 salary
+
+```{r, echo=FALSE}
+salaries = salaries[,-c(ncol(salaries))]
+salaries[21,]
+salaries = salaries[-c(21),]
+
+
+```
+
+###Data analyzing
+
+####2.3
+To check the relative of a country from the rest of the world, we can add an average international rating row for each year. We'll it (OECD (Average International).
+To do so, we will create a vector with the row means, and add the title of it manually. Afterwords, we can add it manually to salaries dataframe.
+```{r}
+row_name = "International Average (OECD)"
+avg_vec = c(row_name, colMeans(salaries[2:ncol(salaries)]))
+```
+
+
+Now, we can join them together with the rbind command. We will use head(salaries) command to check out the top of our data as we did before. 
+```{r}
+salaries <- rbind(avg_vec, salaries)
+colnames(salaries)[1] <- "Country"
+head(salaries)
+```
+####2.4
+Now we can, for example, analyse year 2010.
+Let's check which salary was the closest to the average in 2010, and check which one was the most far from it (from both under and above)
+To do so, we will go throguh the following levels:
+1. Create a reference with the salaries$'2010' values
+2. Reduce from it the OCED (remember that this is the first row now), and get the absolut value of to get only the distance.
+3. The maximum and minimum of the original are the most far values from average, and the minumim of the absolut value reduced column is the closest to average.
+
+Notice that on the 'which' command (that returns the index that inside the brackets) we add +1 to the index because we sliced the salaries$2010 vector
+
+```{r,echo=FALSE}
+salaries[,2:ncol(salaries)] = as.numeric(unlist(salaries[,2:ncol(salaries)]))
+```
+
+```{r}
+column = as.numeric(salaries$`2010`)
+salaries[which(salaries$`2010`==max(column)),]
+salaries[which(salaries$`2010`==min(column)),]
+salaries[which (abs(column[2:nrow(salaries)]-column[1]) == min(abs(column[2:nrow(salaries)]-column[1])))+1,]
+```
+
+We got that the highest salary was at Luxembourg, the lowest was in at Hungary, and the closest to average Portugal
+
+####2.5
+Here are the highest earned countries in 2015.
+
+```{r}
+head(subset(salaries[order(salaries$`2015`, decreasing = TRUE), c(1,12)]), n=5L)
+
+```
+
+Let's check their rank in the Pisa test.
+```{r}
+twenty_fifteen = data[which(data$year==2015),]
+twenty_fifteen = merge( salaries[(which(colnames(salaries)==c("Country","2015")))], twenty_fifteen, by = c("Country") ,all = TRUE, sort = TRUE)
+head(twenty_fifteen[order(twenty_fifteen$`2015`, decreasing = TRUE),],n = 5)
+```
+We can see that there is no high correlation between the salaries in 2015 to the Pisa scores.
+
+
+####2.6
+Let's check the change in salary between 2005 and 2017. To do so, we can copy the 2005, 2017 columns to a new dataframe and calculate the percent of change. Afterwards we can use the head and order function to show the top 5, as we did before.
+
+```{r}
+changes = salaries[c(1,2,ncol(salaries))]
+changes$change = (changes$`2017`/changes$`2005`)*100
+head(changes[order(changes$change, decreasing = TRUE),],n = 5)
+
+```
+
+We can see that Latvia has the biggest growth in the teachers salary, and right after, Israel. One reason to that might be the an increase in the price index or inflation
+
+
+##Salaries vs. Test grades
+
+####3.1
+
+To check the influence of the salaries on the test grades, let us first merge our two data set and drop the NA values.
+To do so, we first need to gather the data. To do so we will use the command gather from "tidyr" library. 
+gather() arguments are first, the name of the dataframe, second, the name you want for you new category column (that's called the key), and third is the name you want for your new value column (called value). After that are any column that you want to gather into the new key and value columns.Because we want all the year columns gathered but not the country columns, we will add the argument "-Country" (pay attention to the minus sign).
+
+After we gathered the data, we can easily merge it to the grades data, since now their shape is similar. notice that rows that aren't filled in both dataframes are removed automatically.
+
+In addition, we use the same functions as before to get the OECD average grades of each year. Notice that some of them are missing values, i decided to drop them.
+
+Let's have a look on the gathered salaries dataframe:
+
+```{r}
+gathered_salaries = gather(data = salaries, key = "year", value = salary, -Country)
+head(gathered_salaries[order(gathered_salaries$Country, decreasing = FALSE),])
+total = merge(data, gathered_salaries, by=c("Country","year"))
+```
+And here is the result of the final merge:
+```{r, echo=FALSE}
+head(total)
+```
+
+
+####3.2-3
+Let's draw some graphs. 
+
+```{r}
+#Salary vs average plot
+  total$Country = trim(total$Country)
+plot(x = total$salary, y = total$average_score, main = "Salary vs. Average Score Plot", ylab = "Pisa average score", xlab = "Teachers salary",
+     pch =19, frame = FALSE, col = 
+ifelse( (total$Country)=="Israel", "orange", ifelse( (total$Country==c("International Average (OECD)")), "green", "black")))   
+
+#Add plot legend
+#legend(100,100,legend=c("Israel", "OECD average"),col=c("orange", "green"))
+
+legend("bottomright", inset=.02,
+   c("Israel","OECD"), fill=c("orange","green"), horiz=TRUE, cex=0.8)
+
+#Regression line
+abline(lm(total$average_score ~ total$salary, data = total), col = "blue")
+
+#Salary vs math plot
+plot(x = total$salary, y = total$math_score, main = "Salary vs. Math Score Plot",
+     ylab = "Pisa math score", xlab = "Teachers salary",
+     pch =19, frame = FALSE)
+
+#Salary vs science plot
+plot(x= total$salary, y = total$science_score, main = "Salary vs. Science Score Plot",
+     ylab = "Pisa science score", xlab = "Teachers salary",
+     pch =19, frame = FALSE)
+
+#Salary vs reading plot
+plot(x = total$salary, y = total$reading_score, main = "Salary vs. Reading Score Plot",
+     ylab = "Pisa reading score", xlab = "Teachers salary",
+     pch =19, frame = FALSE)
+
+```
+
+
+####3.4
+#####Conclusions
+
+We can see that there is some correlation between the teachers salary and the grades. We can get some conclusions from those graphs. First, in richer countries, where teachers earn more, it is possible that more money was invested in education. It is also possible that students from reacher countries has more tools to succeed, like private teachers or after-hours classess. But, we can not forget that the data was collected over more than 10 years, and for my opinion it is possible that the teachers salary is getting higher every year beacause of Infaltion, and that the grades are getting higher because more thecnology is envolved this days in schools and students houses, thus a student can study math or read more at home from various websites.
+In conclusion, for my opinion the correlation is not strong enough, but it is possible that there is a connection betwwen teachers salary and Pisa test, as written above.
+
+
+####4.1
+#####Grades by region
+
+During the work on the grades tables, I was wondering if there is any connection between geographic region and math grade. To do so, i decided to color the world map by the Pisa math score value. And Here is the results. More specifically, i decided to check regions around the meditterenian sea. Here are the results:
+
+
+```{r, warning=FALSE, message=FALSE, results="hide"}
+
+
+twenty_six = data[which(data$year==2006),]
+twenty_six = merge( salaries[(which(colnames(salaries)==c("Country","2006")))], twenty_six, by = c("Country") ,all = TRUE, sort = TRUE)
+twenty_six = twenty_six[-c(5,13,74,75),]
+twenty_six$Country = (trim(twenty_six$Country))
+
+
+twenty_nine = data[which(data$year==2009),]
+twenty_nine = merge( salaries[(which(colnames(salaries)==c("Country","2009")))], twenty_nine, by = c("Country") ,all = TRUE, sort = TRUE)
+twenty_nine = twenty_nine[-c(5,13,74,75),]
+twenty_nine$Country = (trim(twenty_nine$Country))
+
+twenty_fifteen$Country = (trim(twenty_fifteen$Country))
+
+#create a map-shaped window
+mapDevice('x11')
+#join to a coarse resolution map
+spdf <- joinCountryData2Map(twenty_fifteen, joinCode="NAME", nameJoinColumn="Country")
+spdf2 <- joinCountryData2Map(twenty_six, joinCode="NAME", nameJoinColumn="Country")
+spdf3 <- joinCountryData2Map(twenty_nine, joinCode="NAME", nameJoinColumn="Country")
+
+```
+
+It is very interesting to see the changes along the years in european countries, and how for example, countries like Germany Sweden and Finland improved over the years, and the neighbours like spain and portugal were left behind.  
+
+```{r, warning=FALSE}
+
+mapCountryData(spdf2, nameColumnToPlot="math_score", catMethod="fixedWidth", colourPalette = "diverging", mapTitle = "World Pisa math grades 2006",  numCats = 10, oceanCol = "lightblue", missingCountryCol = "lightgrey", mapRegion = 'Eurasia', borderCol = 'black')
+
+
+mapCountryData(spdf3, nameColumnToPlot="math_score", catMethod="fixedWidth", colourPalette = "diverging", mapTitle = "World Pisa math grades 2009", numCats = 10, oceanCol = "lightblue", missingCountryCol = "lightgrey",mapRegion = 'Eurasia', borderCol = 'black')
+
+mapCountryData(spdf, nameColumnToPlot="math_score", catMethod="fixedWidth", colourPalette = "diverging", mapTitle = "World Pisa math grades 2015", numCats = 10, oceanCol = "lightblue", missingCountryCol = "lightgrey", mapRegion = 'Eurasia', borderCol = 'black')
+
+```
+
+####Special Thanks
+###I would like to thanks Dr Yuval Benjamini from the Hebrew Univuersity Jerusalem Institute for the data and all the questions asked about it.
+###Special thanks to Mr. Adi Ziv for the support and guidance.

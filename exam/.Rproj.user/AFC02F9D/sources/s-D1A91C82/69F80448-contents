@@ -1,0 +1,8 @@
+path = "C:\\Users\\Liav\\Desktop\\Uni\\Dropbox\\Project_JIM\\Sentiment Analysis\\full_sentence"
+setwd(path)
+data = read.csv('realDonaldTrump_translated_sentiment.csv')[2:5]
+head(data)
+data[nrow(data)+1,2:4] = colMeans(data[,2:4])
+data[nrow(data)+1,1] = "averages"
+data
+

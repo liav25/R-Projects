@@ -1,0 +1,223 @@
+---
+title: "ex3"
+author: '20474862'
+date: "17 ביוני 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Part 2 - Black jack simulator
+
+
+a. Write a function that draws from a card deck.
+To simplify our game, and since (J Q K) all equal to 10, we won't use the royalty LETTERS but values.
+```{r cars}
+
+#this function draw a randon element from vector and keeps it
+#param deck - the vector we pop from
+#param hand - the keeper
+#return hand - the keeper
+draw_card = function(deck, hand){
+  #random card index
+  rand = round(runif(1, min = 1, max = length(deck)))
+  #pick a random card
+  card = deck[rand]
+  #take out the card from deck
+  deck <<- deck[-rand]
+  #add to hand
+  hand = c(hand, card)
+  return(hand)
+}
+```
+
+Before we go n, we will need a functiob that compute the best sum of the hand, considering rules of black jack.
+```{r}
+#this function is computing the bset sum for the hand
+#param hand - a vector of cards
+#return the best sum player can get in blackjack (include above 21, but then compute the minimum)
+sum_hand = function(hand){
+  #if no cards picked yet
+  if(length(hand)==0){
+    return(0)
+  }
+    #if player got Ace
+    if( "A" %in% hand){
+      #get aces index
+      aces = which(hand == "A")
+      #check sum without ace
+      hand_without_aces = as.numeric(hand[-aces])
+      #best strategy for player in different cases:
+      if(sum(hand_without_aces)<=10){
+        if(length(aces)==1){
+          return(sum(hand_without_aces)+11)
+        }
+        if(length(aces==2)){
+          return(sum(hand_without_aces)+12)
+        }
+        if(length(aces==3)){
+          return(sum(hand_without_aces)+13)
+        }
+        if(length(aces==4)){
+          return(sum(hand_without_aces)+14)
+        }
+      }
+      #more best strategies in case sum is more then 10
+      else{
+          if(length(aces)==1){
+          return(sum(hand_without_aces)+1)
+        }
+        if(length(aces==2)){
+          return(sum(hand_without_aces)+2)
+        }
+        if(length(aces==3)){
+          return(sum(hand_without_aces)+3)
+        }
+        if(length(aces==4)){
+          return(sum(hand_without_aces)+4)
+        }
+      }
+      
+      
+    }
+  #if no ace, return the sum of the hand
+  else{
+    return(sum(as.numeric(hand)))
+  }
+}
+```
+
+
+b. Write a function that compares two black-jack hands - House and Player - and decides who wins.
+Rules:
+If one hand is > 21, that side loses.
+If both hands > 21, Player loses.
+If both hands equal, Player loses.
+If Player > House, Player wins.
+Ace counted as 1 or 11, whichever is better.
+
+```{r}
+#this function compare the sums of the hands and return the winner
+#param sum_house - the sum of the houses hand
+#param sum_player - the sum of the players hand
+#return the winner's name (string)
+compare_sums = function(sum_house, sum_player){
+  if (sum_player>21 & sum_house<=21){
+    return("House")
+  }
+  if (sum_house>21 & sum_player<=21){
+    return("Player")
+  }
+  if (sum_house>21 & sum_player>21){
+    return("HOUSE")
+  }
+  else{
+    if(sum_house>=sum_player){
+      return("HOUSE")
+    }
+    else{
+      return("Player")
+    }
+  }
+  
+}
+```
+
+c. House strategy: House always draws more cards until 17, then stops. Write function that draws house strategy.
+```{r}
+#this function is the house strategy function
+#house keep drawing until he have over 17
+#param house - the house hand
+#return - house hand (list)
+house_strategy = function(house){
+  while(sum_hand(house)<17){
+  house = draw_card(deck, house)
+  }
+  return(house)
+}
+
+#this funciton initialize a game
+init_game= function(){
+  #initialize house hand
+house <<- c()
+  #initialize player's hand
+player <<- c()
+#initialize list of cards, four 10's for one 10 and 3 pictures
+cards <<- c("A",2,3,4,5,6,7,8,9,10,10,10,10)
+#initialize deck
+deck <<- rep(cards, 4)
+}
+```
+d. If Player playes house strategy, what is player probability of winning? Estimate using Monte-Carlo. Choose number of repeats (B) so that std-deviation of your is low enough.
+
+```{r}
+#initialize columns for summary data frame
+df = data.frame()
+house_vec = c()
+player_vec = c()
+sum_house_vec = c()
+sum_player_vec = c()
+winner_vec = c()
+wins=c()
+j=0
+n=10000
+for (i in 1:n){
+  init_game()  
+  house = house_strategy(house)
+  player = house_strategy(player)
+  house_vec = c(house_vec,list(house))  
+  player_vec = c(player_vec, list(player))
+  sum_house_vec = c(sum_house_vec, sum_hand(house))
+  sum_player_vec = c(sum_player_vec, sum_hand(player))
+  winner = compare_sums(sum_hand(house), sum_hand(player))
+  winner_vec = c(winner_vec, winner)
+  if (winner=="Player"){
+    j=j+1
+    wins = c(wins, j)
+  }
+  else{a = c(wins,j)}
+}
+games = seq(1:length(a))
+library(ggplot2)
+res = as.data.frame(cbind(games, wins))
+ggplot(data=res, aes(y=games,x=wins))+ geom_line()
+df = data.frame(sum_house_vec,sum_player_vec, winner_vec)
+p = length(which(df$winner_vec=="Player"))/n
+print(paste0("After " ,n, " repeats, the probability of player wins is: " ,p))
+#to see all games print df
+
+```
+
+
+????? d ??????? ????? ?? ??????? ?????? ????? ??? ???? (????? ?????) ??? ????? ?????? ????? ????????. 
+?????? ??? ???? ????????. 
+??? ??????? ?????? ?????, ?? ??????? ?? ????? ????? ???????? (B), ???? ????? ?????? ???????. 
+?? ??, ?? ????? ???? ?? ????? ???? ????? ??? ?????? ?? ????? ??? ?? ????? ??????, ??? ????? ????? ????????. 
+?? ???? ????? ???? ??? ????? 95% ????? ?????? ???????, ??? ?????? ????? ??????? ?????????.
+
+e
+X.gag +- z(1-alpha/2)*sqrt(p(1-p)/n)
+
+![Wow](http://unsplash.it/500/500?image=1012)
+
+
+```{r}
+
+
+
+binom_sd = (p*(1-p))^0.5
+binom_sd
+wins = ifelse(winner_vec=="Player",1,0)
+sd(wins)
+var(wins)
+
+
+
+```
+
+
+
+
+

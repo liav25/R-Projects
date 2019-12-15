@@ -1,0 +1,4 @@
+"0","#these is our pattern"
+"0","contintens = ""Africa|Europe|Americas|Asia|Oceania"""
+"0","#againg same method"
+"0","data_cont = data_cap[str_which(data, contintens)]"

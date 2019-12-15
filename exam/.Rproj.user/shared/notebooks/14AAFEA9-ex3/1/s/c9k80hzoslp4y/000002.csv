@@ -1,0 +1,8 @@
+"0","go = function(steps_player_x){"
+"0","  dices = c(0,0)"
+"0","  while(dices[1] == dices[2]){"
+"0","     dices = roll_dice()"
+"0","     steps_player_x = steps_player_x + sum(dices) "
+"0","  }"
+"0","  return(steps_player_x)"
+"0","}"

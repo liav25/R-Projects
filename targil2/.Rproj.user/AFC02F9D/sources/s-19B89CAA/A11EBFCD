@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1559311042163.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A11EBFCD",
+    "lastKnownWriteTime" : 1559322784,
+    "last_content_update" : 1559325229346,
+    "path" : "C:/Users/Liav/Desktop/Uni/R/targil2/ex2.Rmd",
+    "project_path" : "ex2.Rmd",
+    "properties" : {
+        "cursorPosition" : "51,0",
+        "last_setup_crc32" : "19B89CAA889315a6",
+        "scrollLine" : "32",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

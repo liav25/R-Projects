@@ -1,0 +1,6 @@
+"0","#sum the duplications in id columns"
+"0","sum(duplicated(accidents$id))"
+"1","[1]"
+"1"," 33"
+"1","
+"

@@ -1,0 +1,6 @@
+"0","#create the plot using dplyr for building the legend"
+"0","accidents %>% mutate(color = ifelse(street1_hebrew==max_ratio_road, ""highest pedestrians accident ratio road"", ifelse(accident_severity ==""קטלנית"", 'תאונה קטלנית', 'תאונה'))) %>%"
+"0","ggplot(aes(x=longitude, y=latitude, size = ifelse(street1_hebrew==max_ratio_road , 2  ,ifelse(accident_severity == ""קטלנית"",3.5,1)) ,color=color)) + geom_point(alpha=0.6) + "
+"0","  theme_light() + theme(legend.position = ""bottom"", title=element_text(size=20),axis.text = element_text(size=15), legend.text = element_text(size=20)) +"
+"0","  ggtitle(""Accidents Across Tel Aviv"") + scale_color_manual(values = c(""blue"",""grey50"",""red"")) +scale_size_identity() + "
+"0","  guides(colour = guide_legend(override.aes = list(size=10)))"

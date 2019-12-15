@@ -1,0 +1,4 @@
+"0","# Density plots with semi-transparent fill"
+"0","a = ggplot(as.data.frame(monte_vec), aes(x=monte_vec))+ scale_colour_manual(name = 'Legend', guide = 'legend', breaks = c(""Histogram""='blue', 'Normal Dist'='red','Density'='yellow'),values = c('blue', 'red','yellow')) +"
+"0","  geom_histogram(data = as.data.frame(monte_vec), aes(x=monte_vec, y=..density..), binwidth=0.05, colour=""white"", fill=""darkblue"") + geom_density(fill=""yellow"", alpha=.3, color = ""blue"") + stat_function(fun = dnorm, args = list(mean = mean(monte_vec), sd = sd(monte_vec)), col='red', size=1) + ggtitle(""Number of Turns to a Monopoly full round"",subtitle = ""Density, Histogram and Normal Dist."")"
+"0","a"
