@@ -1,4 +1,0 @@
-"0","#Set the seed of R‘s random number generator, which is useful for creating simulations or random objects that can be reproduced."
-"0","set.seed(23)"
-"0","#reading the file with UTF-8 encoding"
-"0","accidents = read.csv(""accidents.csv"", encoding = ""UTF-8"")"

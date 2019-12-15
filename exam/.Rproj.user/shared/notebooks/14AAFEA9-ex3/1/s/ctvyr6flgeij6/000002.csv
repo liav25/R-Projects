@@ -1,2 +1,0 @@
-"0","#save all places in data which start with capital Letter from A-Z"
-"0","data_cap = data[str_which(data, ""^[A-Z]"")]"

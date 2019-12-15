@@ -1,4 +1,0 @@
-"0","side_accidents %>% group_by(road_width_hebrew) %>% summarise(total = sum(X)) %>% filter(str_detect(road_width_hebrew,"""")) %>%"
-"0","  ggplot(aes(x = """", y = total, fill = road_width_hebrew)) +"
-"0","  geom_bar(width = 1, stat = ""identity"", color = ""white"") +"
-"0","  coord_polar(""y"", start = 0) + theme_void() + guides(fill=guide_legend(title=""Legend""))"

@@ -1,4 +1,0 @@
-"0","#create a vector of the values we need"
-"0","serious_values = c(""קשה"",""קטלנית"")"
-"0","#filter by that vector"
-"0","serious_accidents = accidents.new[which(accidents.new$accident_severity %in% serious_values),]"

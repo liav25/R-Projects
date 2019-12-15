@@ -1,3 +1,0 @@
-"0","day_night_types = accidents.new %>% group_by(day_night_hebrew, accident_type_hebrew) %>% summarise(total = sum(X))"
-"0","day_night_types$total = ifelse(day_night_types$day_night_hebrew==""יום"",day_night_types$total/DAY_ACC, day_night_types$total/NIGHT_ACC)"
-"0","ggplot(data = day_night_types, aes(x=accident_type_hebrew, y=total, group = day_night_hebrew, fill=accident_type_hebrew)) + geom_bar(stat = ""identity"") + facet_wrap(.~day_night_hebrew) + theme(axis.text.x = element_text(angle=90, size=10)) + xlab(""Accident Types"") + ylab(""Precentage of DayTime"") + guides(fill=guide_legend(title=""Accident Type""))"

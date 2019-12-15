@@ -1,2 +1,0 @@
-"0","#check how many values from each"
-"0","as.data.frame(table(accidents.new$day_night_hebrew))"

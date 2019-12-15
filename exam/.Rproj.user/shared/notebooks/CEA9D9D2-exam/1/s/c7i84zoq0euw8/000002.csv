@@ -1,6 +1,0 @@
-"0","#create grouping by the day vs the night"
-"0","day_night_pedes = accidents.new %>% group_by(day_night_hebrew, pedestrian_involved) %>% summarise(total = sum(X))"
-"0","day_night_pedes$total = ifelse(day_night_pedes$day_night_hebrew==""יום"",day_night_pedes$total/DAY_ACC, day_night_pedes$total/NIGHT_ACC)"
-"0","#plot"
-"0","ggplot(data = day_night_pedes, aes(x=pedestrian_involved, y=total, fill=pedestrian_involved)) + geom_bar(stat = ""identity"")  + xlab(""Year"") + ylab(""Pedestrian Involvment precentage"")+facet_wrap(.~day_night_hebrew) + geom_text(aes(label=round(total,3)), vjust=2, color=""white"","
-"0","            position = position_dodge(1), size=4 ) + theme(axis.text.x = element_text(angle=45, vjust = 0.5))"

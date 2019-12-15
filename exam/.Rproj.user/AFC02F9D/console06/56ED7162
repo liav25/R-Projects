@@ -1,9 +1,0 @@
-[0m[0K]0;:/c/Users/Liav/Desktop/Uni/R/exam[?25l
-[0;32mLiav@DESKTOP-L5FBHFI [0;35m [0;33m~/Desktop/Uni/R/exam[0m[0K
-$[0K[3G[?25h[0m[0K]0;:/c/Users/Liav/Desktop/Uni/R/exam[?25l
-[0;32mLiav@DESKTOP-L5FBHFI [0;35m [0;33m~/Desktop/Uni/R/exam[0m[0K
-$[0K[3G[?25h[?25l$ side_accidents %>% group_by(road_surface_hebrew) %>% summarise(total = sum(X)) %>% filter(!str_detect(road_surface_hebrew,"אחר")) %>%[0K
-bash: !str_detect: event not found[0K
-[?25l
-[0;32mLiav@DESKTOP-L5FBHFI [0;35m [0;33m~/Desktop/Uni/R/exam[0m[0K
-$[0K[3G[?25h[?25l$ ;[0K[?25h[6n

@@ -1,4 +1,0 @@
-"0","#remove the indices of rows that are duplicated "
-"0","accidents.new = accidents[-which(duplicated((accidents$id))),]"
-"0","#X was redundant, so i will use it for counting. explained later."
-"0","accidents.new$X = 1"
